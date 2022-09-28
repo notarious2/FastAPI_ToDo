@@ -14,12 +14,12 @@ class TaskModel(Base):
 
 class UserModel(Base):
     __tablename__ = "user"
-    user_id = Column(String, primary_key=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
+    user_id = Column(String, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
     name = Column(String, index=False)
-    username = Column(String, unique=True, index=True, nullable=False)
-    password = Column(String, nullable=False)
+    username = Column(String, unique=True, index=True)
+    password = Column(String)
 
     task = relationship("TaskModel", back_populates = "user")
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True

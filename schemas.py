@@ -17,6 +17,12 @@ class UserSchema(BaseModel):
     name: str
     username: str
     password: str
-    
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True
+
+class UserDisplaySchema(BaseModel):
+    name: str
+
+    # makes links between User and UserDisplay schemas
+    # class Config:
+    #     orm_mode = True
