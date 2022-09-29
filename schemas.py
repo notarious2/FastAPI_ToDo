@@ -5,12 +5,15 @@ from typing import Optional
 
 class TaskBase(BaseModel):
     text: str
-
+    class Config:
+        orm_mode = True
 class TaskCreate(TaskBase):
     pass
 
 class TaskDisplay(TaskBase):
     user_id: str
+    class Config:
+        orm_mode = True
 
 class Task(TaskBase):
     task_id: str

@@ -8,6 +8,7 @@ from hashed import Hash
 def get_task_by_id(db: Session, id: str):
     return db.query(models.TaskModel).filter(models.TaskModel.task_id == id).first()
 
+#add task for logged in user
 def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserModel):
     task_id = str(uuid.uuid4())
     #checking existence of task id
@@ -21,8 +22,9 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
     db.commit()
     db.refresh(task)
 
-def get_tasks(db: Session):
-    return db.query(models.TaskModel).all()
+#get all tasks of a logged in user
+def get_tasks(db: Session, current_user: models.UserModel):
+    return db.query(models.TaskModel).filter(models.TaskModel.user_id == current_user.user_id).all()
 
 def delete_all_tasks(db: Session):
     db.query(models.TaskModel).delete()

@@ -8,7 +8,7 @@ import auth
 from database import Base, engine
 from sqlalchemy.orm import Session
 from database import get_db
-from typing import List, Dict
+from typing import List
 from hashed import Hash
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
@@ -55,21 +55,15 @@ def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = 
 
 
 
-
-
-
-
 #CREATE A TASK
 @app.post("/tasks")
-async def add_task(task: schemas.TaskCreate,
- db: Session = Depends(get_db), 
- current_user: models.UserModel = Depends(get_current_user)):
+async def add_task(task: schemas.TaskCreate, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
     crud.add_task(task=task, db=db, current_user=current_user)
     return "OK"
-
-@app.get("/tasks")
-async def get_tasks(db: Session = Depends(get_db)):
-    return crud.get_tasks(db=db)
+#GET ALL TASKS OF A USER
+@app.get("/tasks", response_model=List[schemas.TaskDisplay])
+async def get_tasks(db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+    return crud.get_tasks(db=db, current_user=current_user)
 
 @app.get("/tasks/delete")
 async def delete_all_tasks(db: Session = Depends(get_db)):
