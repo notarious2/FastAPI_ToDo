@@ -24,7 +24,12 @@ async def add_task(task: schemas.TaskCreate, db: Session = Depends(get_db), curr
 async def get_tasks(db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
     return crud.get_tasks(db=db, current_user=current_user)
 
-#DELETE ALL TASKS IRRESPECTIVE OF A USER
+#GET ALL TASKS OF ALL USERS
+@router.get("/all", response_model=List[schemas.TaskDisplay])
+async def get__all_tasks(db: Session = Depends(get_db)):
+    return crud.get_all_tasks(db=db)
+
+#DELETE ALL TASKS IRRESPECTIVE FOR ALL USERS
 @router.get("/delete")
 async def delete_all_tasks(db: Session = Depends(get_db)):
     return crud.delete_all_tasks(db=db)

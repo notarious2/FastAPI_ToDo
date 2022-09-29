@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 import models, schemas
 import uuid
-from hashed import Hash
+from password_hashing import Hash
 
-# we need this function to check for duplicate Task IDs when creating a new task
 
+# TASK RELATED QUERIES
+
+#need this function to check for duplicate Task IDs when creating a new task
 def get_task_by_id(db: Session, id: str):
     return db.query(models.TaskModel).filter(models.TaskModel.task_id == id).first()
 
@@ -22,13 +24,21 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
     db.commit()
     db.refresh(task)
 
-#get all tasks of a logged in user
+#get all tasks of a LOGGED IN user
 def get_tasks(db: Session, current_user: models.UserModel):
     return db.query(models.TaskModel).filter(models.TaskModel.user_id == current_user.user_id).all()
 
+#get all tasks of all users
+def get_all_tasks(db: Session):
+    return db.query(models.TaskModel).all()
+
+#delete all tasks for all users
 def delete_all_tasks(db: Session):
     db.query(models.TaskModel).delete()
     db.commit()
+
+
+# USER RELATED QUERIES
 
 # we need this function to check for duplicate User IDs when creating a new user
 def get_user_by_id(db: Session, id: str):
