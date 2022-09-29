@@ -1,8 +1,22 @@
 from sqlalchemy.orm import Session
 import models, schemas
+import uuid
+from hashed import Hash
 
-def add_task(db: Session, task: schemas.TaskSchema):
-    task = models.TaskModel(task_id=task.task_id, text = task.text, user_id = task.user_id)
+# we need this function to check for duplicate Task IDs when creating a new task
+
+def get_task_by_id(db: Session, id: str):
+    return db.query(models.TaskModel).filter(models.TaskModel.task_id == id).first()
+
+def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserModel):
+    task_id = str(uuid.uuid4())
+    #checking existence of task id
+    while get_task_by_id(db=db, id=task_id):
+        task_id = uuid.uuid4()
+    task = models.TaskModel(
+        task_id=task_id,
+        text = task.text,
+        user_id = current_user.user_id) # need to assign user id
     db.add(task)
     db.commit()
     db.refresh(task)
@@ -14,19 +28,44 @@ def delete_all_tasks(db: Session):
     db.query(models.TaskModel).delete()
     db.commit()
 
-def add_user(db: Session, user: schemas.UserSchema):
-    task = models.UserModel(user_id=user.user_id,
+# we need this function to check for duplicate User IDs when creating a new user
+def get_user_by_id(db: Session, id: str):
+    return db.query(models.UserModel).filter(models.UserModel.user_id == id).first()
+
+# need for user login
+def get_user_by_username(db: Session, username: str):
+    return db.query(models.UserModel).filter(models.UserModel.username == username).first()
+
+
+def add_user(db: Session, user: schemas.UserCreate):
+    user_id =  str(uuid.uuid4())
+    
+    #checking if such ID already exists:
+    while get_user_by_id(db=db, id = user_id):
+        user_id =  str(uuid.uuid4())
+
+    #hashing password
+    password = Hash.get_hashed_password(user.password)
+    
+    #adding to Model - SQL table
+    new_user = models.UserModel(
+    user_id=user_id,
     email = user.email,
     name = user.name,
     username = user.username,
-    password = user.password)
-    db.add(task)
+    password = password)
+    db.add(new_user)
     db.commit()
-    db.refresh(task)
+    db.refresh(new_user)
 
+    return new_user
+
+
+#getting all users
 def get_users(db: Session):
     return db.query(models.UserModel).all()
 
+#deleting all users
 def delete_all_users(db: Session):
     db.query(models.UserModel).delete()
     db.commit()

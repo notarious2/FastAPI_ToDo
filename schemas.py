@@ -3,26 +3,45 @@ from typing import Optional
 
 
 
-class TaskSchema(BaseModel):
-    task_id: str
+class TaskBase(BaseModel):
     text: str
+
+class TaskCreate(TaskBase):
+    pass
+
+class TaskDisplay(TaskBase):
     user_id: str
+
+class Task(TaskBase):
+    task_id: str
+    user_id: str
+    # class Config:
+    #     orm_mode = True
+
+
+
+
+class User(BaseModel):
+    user_id: str
+    name: str
+    email: str
+    username: str
+    password: str
+    class Config:
+        orm_mode = True
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    username: str
+    password: str
     
     class Config:
         orm_mode = True
 
-class UserSchema(BaseModel):
-    user_id: str
-    email: str
-    name: str
+class UserDisplay(BaseModel):
     username: str
-    password: str
-    # class Config:
-    #     orm_mode = True
-
-class UserDisplaySchema(BaseModel):
-    name: str
-
+    email: str
     # makes links between User and UserDisplay schemas
-    # class Config:
-    #     orm_mode = True
+    class Config:
+        orm_mode = True

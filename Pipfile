@@ -12,6 +12,9 @@ python-multipart = "*"
 python-dotenv = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
+uuid = "*"
+pyjwt = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
 
 [dev-packages]
 
