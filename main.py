@@ -1,23 +1,22 @@
-from sys import prefix
 from fastapi import FastAPI, Depends, Request, HTTPException, status
-from auth import get_current_user
-import schemas
-import models
 import crud
 import auth
 from database import Base, engine
 from sqlalchemy.orm import Session
 from database import get_db
-from typing import List
 from hashed import Hash
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-
+from routers import user, task
 
 Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
 
+#INCLUDING USER ROUTER
+app.include_router(user.router)
+#INCLUDING TASK ROUTER
+app.include_router(task.router)
 #Authenticate user based on username and password
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
     user = crud.get_user_by_username(db=db, username=username)
@@ -31,11 +30,11 @@ def authenticate_user(username: str, password: str, db: Session = Depends(get_db
 
 
 
-@app.get('/')
+@app.get('/', tags=["root"])
 async def root():
     return "Hello World!"
 
-@app.post('/login', tags = ["Authentication"])
+@app.post('/login', tags = ["authentication"])
 def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
    user = authenticate_user(db=db, username=form_data.username, password=form_data.password)
    if not user:
@@ -54,30 +53,3 @@ def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = 
 
 
 
-
-#CREATE A TASK
-@app.post("/tasks")
-async def add_task(task: schemas.TaskCreate, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
-    crud.add_task(task=task, db=db, current_user=current_user)
-    return "OK"
-#GET ALL TASKS OF A USER
-@app.get("/tasks", response_model=List[schemas.TaskDisplay])
-async def get_tasks(db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
-    return crud.get_tasks(db=db, current_user=current_user)
-
-@app.get("/tasks/delete")
-async def delete_all_tasks(db: Session = Depends(get_db)):
-    return crud.delete_all_tasks(db=db)
-
-@app.post("/user", response_model=schemas.UserDisplay)
-async def add_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    return crud.add_user(user=user, db=db)
-    
-
-@app.get("/users")
-async def get_users(db: Session = Depends(get_db)):
-    return crud.get_users(db=db)
-
-@app.get("/users/delete")
-async def delete_all_users(db: Session = Depends(get_db)):
-    return crud.delete_all_users(db=db)

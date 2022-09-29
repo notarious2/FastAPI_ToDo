@@ -19,7 +19,8 @@ class TaskModel(Base):
     task_id = Column(String, primary_key=True, index=True, unique=True)
     text = Column(String, nullable=False)
     user_id = Column(String, ForeignKey("user.user_id"))
+    
     owner = relationship("UserModel", back_populates = "todos")
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True
 

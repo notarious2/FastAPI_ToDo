@@ -30,8 +30,8 @@ class User(BaseModel):
     email: str
     username: str
     password: str
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True
 
 class UserCreate(BaseModel):
     name: str
