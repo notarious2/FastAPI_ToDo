@@ -44,10 +44,13 @@ def delete_all_tasks(db: Session):
 def get_user_by_id(db: Session, id: str):
     return db.query(models.UserModel).filter(models.UserModel.user_id == id).first()
 
-# need for user login
+# need for user login and registration
 def get_user_by_username(db: Session, username: str):
     return db.query(models.UserModel).filter(models.UserModel.username == username).first()
 
+# need for registration - to check if email aready registered
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.UserModel).filter(models.UserModel.email == email).first()
 
 def add_user(db: Session, user: schemas.UserCreate):
     user_id =  str(uuid.uuid4())

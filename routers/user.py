@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm.session import Session
 from database import get_db
 import schemas, crud
@@ -14,6 +14,16 @@ router = APIRouter(
 #CREATE A USER
 @router.post("", response_model=schemas.UserDisplay)
 async def add_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    # checking if username already exists 
+    user_exists = crud.get_user_by_username(db=db, username=user.username)
+    if user_exists:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, 
+        detail="Username already exists")
+    # checking if email already exists 
+    email_exists = crud.get_user_by_email(db=db, email=user.email)
+    if email_exists:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, 
+        detail="Email already exists")
     return crud.add_user(user=user, db=db)
     
 #GET ALL USERS
