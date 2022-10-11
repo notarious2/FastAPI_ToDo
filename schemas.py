@@ -1,9 +1,11 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
 
 
 class TaskBase(BaseModel):
+    date: datetime
     text: str
     class Config:
         orm_mode = True

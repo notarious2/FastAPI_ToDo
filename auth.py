@@ -45,4 +45,5 @@ def decode_access_token(db, token):
 
 def get_current_user(db: Session = Depends(get_db),
                 	token: str = Depends(oauth2_scheme)):
+   print(token)
    return decode_access_token(db, token)

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 import models, schemas
 import uuid
 from password_hashing import Hash
-
+import datetime
 
 # TASK RELATED QUERIES
 
@@ -18,8 +18,10 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
         task_id = uuid.uuid4()
     task = models.TaskModel(
         task_id=task_id,
+        date = datetime.datetime.now(),
         text = task.text,
         user_id = current_user.user_id) # need to assign user id
+
     db.add(task)
     db.commit()
     db.refresh(task)

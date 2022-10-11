@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, DateTime, String, ForeignKey
 from database import Base
 from sqlalchemy.orm import relationship
 
@@ -19,7 +19,7 @@ class TaskModel(Base):
     task_id = Column(String, primary_key=True, index=True, unique=True)
     text = Column(String, nullable=False)
     user_id = Column(String, ForeignKey("user.user_id"))
-    
+    date = Column(DateTime)
     owner = relationship("UserModel", back_populates = "todos")
     # class Config:
     #     orm_mode = True
