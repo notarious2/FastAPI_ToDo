@@ -1,4 +1,5 @@
-from sqlalchemy import Column, DateTime, String, ForeignKey
+from email.policy import default
+from sqlalchemy import Column, Date, String, Boolean, ForeignKey
 from database import Base
 from sqlalchemy.orm import relationship
 
@@ -17,9 +18,10 @@ class UserModel(Base):
 class TaskModel(Base):
     __tablename__ = "task"
     task_id = Column(String, primary_key=True, index=True, unique=True)
+    date = Column(Date)
     text = Column(String, nullable=False)
+    completed = Column(Boolean, default=False) #need to use default otherwise result is None
     user_id = Column(String, ForeignKey("user.user_id"))
-    date = Column(DateTime)
     owner = relationship("UserModel", back_populates = "todos")
     # class Config:
     #     orm_mode = True

@@ -1,12 +1,13 @@
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel
 from typing import Optional
 
 
 
 class TaskBase(BaseModel):
-    date: datetime
+    date: date
     text: str
+    completed: bool = False #default value show in fastapi docs
     class Config:
         orm_mode = True
 class TaskCreate(TaskBase):
