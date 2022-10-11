@@ -19,6 +19,7 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
     task = models.TaskModel(
         task_id=task_id,
         date = datetime.datetime.now(),
+        priority = task.priority,
         text = task.text,
         completed = task.completed,
         user_id = current_user.user_id) # need to assign user id

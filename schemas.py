@@ -5,6 +5,7 @@ from typing import Optional
 
 
 class TaskBase(BaseModel):
+    priority: int
     date: date
     text: str
     completed: bool = False #default value show in fastapi docs
