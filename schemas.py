@@ -16,6 +16,7 @@ class TaskCreate(TaskBase):
 
 class TaskDisplay(TaskBase):
     user_id: str
+    task_id: str
     class Config:
         orm_mode = True
 
@@ -24,8 +25,6 @@ class Task(TaskBase):
     user_id: str
     # class Config:
     #     orm_mode = True
-
-
 
 
 class User(BaseModel):

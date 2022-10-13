@@ -18,7 +18,7 @@ class UserModel(Base):
 class TaskModel(Base):
     __tablename__ = "task"
     task_id = Column(String, primary_key=True, index=True, unique=True)
-    priority = Column(Integer, unique=True)
+    priority = Column(Integer)
     date = Column(Date)
     text = Column(String, nullable=False)
     completed = Column(Boolean, default=False) #need to use default otherwise result is None

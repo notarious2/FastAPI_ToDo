@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 import models, schemas
 import uuid
 from password_hashing import Hash
-import datetime
+from fastapi import HTTPException, status
 
 # TASK RELATED QUERIES
 
@@ -18,7 +18,7 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
         task_id = uuid.uuid4()
     task = models.TaskModel(
         task_id=task_id,
-        date = datetime.datetime.now(),
+        date = task.date,
         priority = task.priority,
         text = task.text,
         completed = task.completed,
@@ -28,15 +28,28 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
     db.commit()
     db.refresh(task)
 
-#get all tasks of a LOGGED IN user
+# get all tasks of a LOGGED IN user
 def get_tasks(db: Session, current_user: models.UserModel):
     return db.query(models.TaskModel).filter(models.TaskModel.user_id == current_user.user_id).all()
 
-#get all tasks of all users
+# get all tasks of all users
 def get_all_tasks(db: Session):
     return db.query(models.TaskModel).all()
 
-#delete all tasks for all users
+# delete task by id - must be logged in
+def delete_task_by_id(db: Session, task_id: int, user_id:str):
+    task = get_task_by_id(db=db, id=task_id)
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail = f"task with id {task_id} not found")
+    if task.user_id != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+        detail = "Only Task Creator Can Delete Task")
+    db.delete(task)
+    db.commit()
+    return "task deleted"
+
+# delete all tasks for all users
 def delete_all_tasks(db: Session):
     db.query(models.TaskModel).delete()
     db.commit()
