@@ -72,17 +72,11 @@ def update_task(db: Session, task_id: int, new_task: schemas.TaskOptional, user_
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
         detail = "Only Task Creator Can Delete Task")
     # can change text, priority and completed if passed
-    print("NEW TASK ALL!", new_task)
-    print("PRIORITY!", new_task.priority)
-    if new_task.text!=None: task.text = new_task.text 
-    if new_task.priority!=None: task.priority = new_task.priority 
+    print("NEW TASK", new_task)
+    if new_task.text: task.text = new_task.text 
+    if new_task.priority: task.priority = new_task.priority 
+    #need to be careful here as completed is BOOLEAN
     if new_task.completed!=None: task.completed = new_task.completed 
-
-    # need to reorder tasks
-     # retrieve all tasks of the user
-    # tasks = db.query(models.TaskModel).filter(models.TaskModel.user_id == user_id).all()
-     # order ascendingly
-    # tasks.order_by(models.TaskModel.priority.asc())
     db.commit()
     return "task updated!"
 
