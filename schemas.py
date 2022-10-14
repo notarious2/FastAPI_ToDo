@@ -26,6 +26,14 @@ class Task(TaskBase):
     # class Config:
     #     orm_mode = True
 
+class TaskOptional(TaskBase):
+    priority: Optional[int]
+    date: Optional[date]
+    text: Optional[str]
+    completed: Optional[bool]
+    class Config:
+        orm_mode = True
+
 
 class User(BaseModel):
     user_id: str

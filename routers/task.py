@@ -39,3 +39,7 @@ async def delete_task_by_id(id:str, db: Session = Depends(get_db), current_user:
 async def delete_all_tasks(db: Session = Depends(get_db)):
     return crud.delete_all_tasks(db=db)
 
+# UPDATE ANY PASSED FIELD OF THE TASK FOR LOGGED IN USER
+@router.patch("/update/{id}")
+async def update_task(id: str, task: schemas.TaskOptional, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+    return crud.update_task(db=db, task_id=id, new_task=task, user_id=current_user.user_id)    
