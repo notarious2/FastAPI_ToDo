@@ -43,3 +43,7 @@ async def delete_all_tasks(db: Session = Depends(get_db)):
 @router.patch("/update/{id}")
 async def update_task(id: str, task: schemas.TaskOptional, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
     return crud.update_task(db=db, task_id=id, new_task=task, user_id=current_user.user_id)    
+
+@router.patch("/update_order")
+async def update_tasks_order(payload: dict, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+    return crud.update_task_order(db=db, payload=payload, current_user=current_user)    

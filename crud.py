@@ -33,6 +33,7 @@ def add_task(db: Session, task: schemas.TaskCreate, current_user: models.UserMod
 
 # get all tasks of a LOGGED IN user
 def get_tasks(db: Session, current_user: models.UserModel):
+    print("ALL TASKS", db.query(models.TaskModel).filter(models.TaskModel.user_id == current_user.user_id).all())
     return db.query(models.TaskModel).filter(models.TaskModel.user_id == current_user.user_id).all()
 
 # get all tasks of all users
@@ -79,6 +80,18 @@ def update_task(db: Session, task_id: int, new_task: schemas.TaskOptional, user_
     if new_task.completed!=None: task.completed = new_task.completed 
     db.commit()
     return "task updated!"
+
+def update_task_order(db: Session, payload: dict, current_user: models.UserModel):
+    # Load all tasks of the user first
+    all_tasks = get_tasks(db=db, current_user=current_user)
+    
+    print("PAYLOAD")
+    for key, item in payload.items():
+        print(key, item["1"])
+    print("ALL TASKS", all_tasks)
+
+
+
 
 
 
