@@ -1,5 +1,7 @@
+from operator import and_
 from sqlalchemy.orm import Session
-from sqlalchemy import asc
+from sqlalchemy import and_
+from sqlalchemy.sql import case
 import models, schemas
 import uuid
 from password_hashing import Hash
@@ -82,16 +84,17 @@ def update_task(db: Session, task_id: int, new_task: schemas.TaskOptional, user_
     return "task updated!"
 
 def update_task_order(db: Session, payload: dict, current_user: models.UserModel):
-    # Load all tasks of the user first
-    all_tasks = get_tasks(db=db, current_user=current_user)
-    
-    print("PAYLOAD")
-    for key, item in payload.items():
-        print(key, item["1"])
-    print("ALL TASKS", all_tasks)
-
-
-
+    # extract date from payload - which is the only key
+    date_ = list(payload.keys())[0]
+    # get value of payload - {task_id: new_priority}
+    payload = payload[date_] 
+    # Load ALL TASKS of the user for a SPECIFIC DATE
+    tasks = db.query(models.TaskModel).filter(and_(models.TaskModel.user_id == current_user.user_id), \
+        models.TaskModel.date == date_)
+    # Update multiple rows of Priority based on payload containing ID and PRIORITY to be assigned
+    tasks.filter(models.TaskModel.task_id.in_(payload)) \
+        .update({models.TaskModel.priority: case(payload, value=models.TaskModel.task_id)}, synchronize_session=False)
+    db.commit()
 
 
 
