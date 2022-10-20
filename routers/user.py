@@ -26,12 +26,17 @@ async def add_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         detail="Email already exists")
     return crud.add_user(user=user, db=db)
     
-#GET ALL USERS
+# GET ALL USERS
 @router.get("", response_model=List[schemas.UserDisplay])
 async def get_users(db: Session = Depends(get_db)):
     return crud.get_users(db=db)
 
-#DELETED ALL USERS
+# DELETE USER BY ID
+@router.get("/delete/{user_id}")
+async def delete_user_by_id(user_id: str, db: Session = Depends(get_db)):
+    return crud.delete_user_by_id(user_id=user_id, db=db)
+
+# DELETE ALL USERS
 @router.get("/delete")
 async def delete_all_users(db: Session = Depends(get_db)):
     return crud.delete_all_users(db=db)

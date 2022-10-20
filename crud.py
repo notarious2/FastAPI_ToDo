@@ -136,11 +136,23 @@ def add_user(db: Session, user: schemas.UserCreate):
     return new_user
 
 
-#getting all users
+#get all users
 def get_users(db: Session):
     return db.query(models.UserModel).all()
 
-#deleting all users
+# delete user by id
+
+def delete_user_by_id(db: Session, user_id: str):
+    user = db.query(models.UserModel).filter(models.UserModel.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail = f"user with id {user_id} is not found")
+    db.delete(user)
+    db.commit()
+    return "user deleted"
+
+
+# delete all users
 def delete_all_users(db: Session):
     db.query(models.UserModel).delete()
     db.commit()

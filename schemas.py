@@ -56,6 +56,7 @@ class UserCreate(BaseModel):
 class UserDisplay(BaseModel):
     username: str
     email: str
+    user_id: str
     # makes links between User and UserDisplay schemas
     class Config:
         orm_mode = True
